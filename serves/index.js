@@ -26,23 +26,24 @@ app.get('/user/getRouter', (_, res) => {
       path: '/',
       childern: [
         {
+          title: 'test',
+          path: 'test',
+          type: 0,
+          childern: [{ title: 'test2', path: 'test2', type: 1, component: 'supply' }],
+        },
+        {
           title: 'goods',
           path: 'goods',
           type: 1,
-          component: '/goods',
+          component: 'goods',
         },
         {
           title: 'supply',
           path: 'supply',
           type: 1,
-          component: '/supply',
+          component: 'supply',
         },
-        {
-          title: 'test',
-          path: 'test',
-          type: 0,
-          childern: [{ title: 'test2', path: 'test2', type: 1, component: '/supply' }],
-        },
+
       ],
     },
   ])
