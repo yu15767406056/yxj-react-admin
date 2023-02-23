@@ -47,38 +47,30 @@ const formatRouter = (router: userRouter[], path = '', setIndex = false): DiyRou
       }
 
       const LazyElement = lazy(() => import('@/views/' + item.component))
-      // console.log(
-      //   '我靠?=====>',
-      //   setPath,
-      //   item.component === 'BaseLayout'
-      //     ? '<BaseLayout />'
-      //     : item.component
-      //     ? ' <LazyElement />'
-      //     : item.childern && item.childern.length
-      //     ? (setPath + '/' + item.childern[0].path).replace(/(\/+)/, '/')
-      //     : undefined,
-      // )
-      overRouter.push({
-        path: item.path,
+
+      const route: DiyRouteObject = {
+        path: item.path ? setPath : undefined,
         title: item.title,
-        element:
-          item.component === 'BaseLayout' ? (
-            <BaseLayout />
-          ) : item.component ? (
-            <LazyElement />
-          ) : undefined,
-        children: item.childern ? formatRouter(item.childern, setPath, setIndex) : [],
-      })
-    }
-    if (setPath === '/test') {
-      overRouter[0].element = <Navigate to={'/test/test2'} />
-      console.log(overRouter, 'wori')
+      }
+      if (item.component) {
+        if (item.component === 'BaseLayout') route.element = <BaseLayout />
+        else route.element = <LazyElement />
+      }
+      if (!route.element) {
+        const routeChildren = item.childern ? formatRouter(item.childern, setPath, setIndex) : []
+        route.element = routeChildren.length ? (
+          <Navigate to={routeChildren[0].path || '/404'}></Navigate>
+        ) : (
+          <Navigate to={'/404'}></Navigate>
+        )
+        route.children = []
+        overRouter.push(route, ...routeChildren)
+      } else {
+        route.children = item.childern ? formatRouter(item.childern, setPath, setIndex) : []
+        overRouter.push(route)
+      }
     }
   }
-
-  // item.childern && item.childern.length ? (
-  //   <Navigate to={(setPath + '/' + item.childern[0].path).replace(/(\/+)/, '/')} />
-  // ) : undefined
 
   return overRouter
 }

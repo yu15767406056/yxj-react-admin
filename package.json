@@ -161,7 +161,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
-    "node-sass": "^7.0.1",
+    "node-sass": "^8.0.0",
     "prettier": "^2.7.1",
     "prettier-eslint": "^15.0.1",
     "typescript-eslint": "^0.0.1-alpha.0"

@@ -32,6 +32,12 @@ app.get('/user/getRouter', (_, res) => {
           childern: [{ title: 'test2', path: 'test2', type: 1, component: 'supply' }],
         },
         {
+          title: 'test3',
+          path: 'test/test3',
+          type: 0,
+          component: 'goods',
+        },
+        {
           title: 'goods',
           path: 'goods',
           type: 1,
@@ -43,7 +49,6 @@ app.get('/user/getRouter', (_, res) => {
           type: 1,
           component: 'supply',
         },
-
       ],
     },
   ])
