@@ -1,5 +1,5 @@
 import { FC, useEffect } from 'react'
-import { store } from '@src/redux/store'
+import { store } from '@/redux/store'
 import { useNavigate } from 'react-router-dom'
 
 const Goods: FC = () => {

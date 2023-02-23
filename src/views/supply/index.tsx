@@ -1,5 +1,5 @@
 import { FC, useEffect } from 'react'
-import { user } from '@src/api'
+import { user } from '@/api'
 
 const Supply: FC = () => {
   useEffect(() => {

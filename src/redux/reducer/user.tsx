@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { userRouter } from '@src/api/types/user'
-import { getRouter } from '@src/api/user'
-import { DiyRouteObject } from '@src/types/user'
+import { userRouter } from '@/api/types/user'
+import { getRouter } from '@/api/user'
+import { DiyRouteObject } from '@/types/user'
 
 export const fetchRouter = createAsyncThunk('users/fetchRouter', async () => {
   const response = await getRouter()
+  console.log('获取了', response)
   return response.data
 })
 
