@@ -4,6 +4,7 @@ import { fetchRouter } from '@/redux/reducer/user'
 import { userRouter } from '@/api/types/user'
 import BaseLayout from '@/layout'
 import { DiyRouteObject } from '@/types/user'
+import KeepAlive from 'react-activation'
 import {
   FC,
   lazy,
@@ -53,7 +54,14 @@ const formatRouter = (router: userRouter[], path = '', setIndex = false): DiyRou
       }
       if (item.component) {
         if (item.component === 'BaseLayout') route.element = <BaseLayout />
-        else route.element = <LazyElement />
+        else
+          route.element = route.keepAlive ? (
+            <KeepAlive>
+              <LazyElement />
+            </KeepAlive>
+          ) : (
+            <LazyElement />
+          )
       }
       if (!route.element) {
         const routeChildren = item.childern ? formatRouter(item.childern, setPath, setIndex) : []

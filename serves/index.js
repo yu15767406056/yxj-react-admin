@@ -24,32 +24,47 @@ app.get('/user/getRouter', (_, res) => {
       component: 'BaseLayout',
       title: 'home',
       path: '/',
+      id: 1,
       childern: [
         {
           title: 'test',
           path: 'test',
+          id: 2,
           type: 0,
-          childern: [{
-            title: 'test2', path: 'test2', type: 0, childern: [{
-              title: 'test3',
-              path: 'test3',
+          childern: [
+            {
+              title: 'test2',
+              path: 'test2',
               type: 0,
-              component: 'goods',
-            },]
-          }],
+              id: 3,
+              childern: [
+                {
+                  title: 'test3',
+                  path: 'test3',
+                  type: 0,
+                  id: 4,
+                  component: 'goods',
+                },
+              ],
+            },
+          ],
         },
 
         {
           title: 'goods',
           path: 'goods',
           type: 1,
+          id: 5,
           component: 'goods',
+          keepAlive: true
         },
         {
           title: 'supply',
           path: 'supply',
           type: 1,
+          id: 6,
           component: 'supply',
+          icon: 'AppstoreOutlined',
         },
       ],
     },

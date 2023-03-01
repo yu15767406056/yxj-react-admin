@@ -1,53 +1,76 @@
-import {
-  DesktopOutlined,
-  FileOutlined,
-  PieChartOutlined,
-  TeamOutlined,
-  UserOutlined,
-} from '@ant-design/icons'
-import { MenuProps } from 'antd'
+import { userRouter } from '@/api/types/user'
+import IconToElement from '@/components/IconToElement'
+import { useAppSelector } from '@/hooks/redux'
 import { Breadcrumb, Layout, Menu } from 'antd'
-import React, { useState, Suspense } from 'react'
-import { Outlet } from 'react-router-dom'
+import { ItemType } from 'antd/lib/menu/hooks/useItems'
+import { useState, Suspense, useMemo, useCallback, useEffect } from 'react'
+import { Outlet, useLocation } from 'react-router-dom'
 import './index.scss'
 
 const { Header, Content, Footer, Sider } = Layout
 
-type MenuItem = Required<MenuProps>['items'][number]
-
-function getItem(
-  label: React.ReactNode,
-  key: React.Key,
-  icon?: React.ReactNode,
-  children?: MenuItem[],
-): MenuItem {
-  return {
-    key,
-    icon,
-    children,
-    label,
-  } as MenuItem
+/** 根据路由处理菜单配置 */
+const getItems = (routeConfig: userRouter[]): ItemType[] => {
+  const routerItems: ItemType[] = []
+  for (let index = 0; index < routeConfig.length; index++) {
+    const item = routeConfig[index]
+    routerItems.push({
+      label: item.title,
+      icon: <IconToElement iconName={item.icon}></IconToElement>,
+      key: item.id.toString(),
+      children: item.childern ? getItems(item.childern) : undefined,
+    })
+  }
+  return routerItems
 }
 
-const items: MenuItem[] = [
-  getItem('Option 1', '1', <PieChartOutlined />),
-  getItem('Option 2', '2', <DesktopOutlined />),
-  getItem('User', 'sub1', <UserOutlined />, [
-    getItem('Tom', '3'),
-    getItem('Bill', '4', <UserOutlined />),
-    getItem('Alex', '5'),
-  ]),
-  getItem('Team', 'sub2', <TeamOutlined />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
-  getItem('Files', '9', <FileOutlined />),
-]
+/** 回显菜单选中 */
+const getSelectedKeys = (routeConfig: userRouter[], pathList: string[], keys: string[] = []) => {
+  if (pathList.length) {
+    for (let i = 0; i < routeConfig.length; i++) {
+      const item = routeConfig[i]
+      if (item.path === pathList[0] || '/') {
+        keys.push(item.id.toString())
+        pathList.splice(0, 1)
+        pathList.length &&
+          item.childern &&
+          item.childern.length &&
+          getSelectedKeys(item.childern, pathList, keys)
+        break
+      }
+    }
+  }
+
+  return keys
+}
 
 function BaseLayout() {
   const [collapsed, setCollapsed] = useState(false)
+  const routeConfig = useAppSelector((state) => state.user.router)
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([])
+  const location = useLocation()
+  const items = useMemo<ItemType[]>(() => {
+    return getItems(routeConfig)
+  }, [routeConfig])
+  useEffect(() => {
+    setSelectedKeys(getSelectedKeys(routeConfig, location.pathname.split('/'), []))
+  }, [location])
+
+  const onMenuItemSelect = useCallback((selectData: any) => {
+    setSelectedKeys(selectData.selectedKeys)
+    console.log(selectData)
+  }, [])
   return (
     <Layout className='base-layout' style={{ minHeight: '100vh' }}>
       <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
         <div className='logo' />
-        <Menu theme='dark' defaultSelectedKeys={['1']} mode='inline' items={items} />
+        <Menu
+          theme='dark'
+          selectedKeys={selectedKeys}
+          mode='inline'
+          items={items}
+          onSelect={onMenuItemSelect}
+        />
       </Sider>
       <Layout className='site-layout'>
         <Header className='site-layout-background' style={{ padding: 0 }}>

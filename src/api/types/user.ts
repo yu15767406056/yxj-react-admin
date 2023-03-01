@@ -5,6 +5,7 @@ type userRouter = {
   type: 0 | 1 | 2
   component?: string
   childern?: userRouter[]
+  id: number
 }
 
 export type { userRouter }
