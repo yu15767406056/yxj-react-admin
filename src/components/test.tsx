@@ -14,9 +14,9 @@ function Test() {
   }
 
   useEffect(() => {
-    console.log('清除副作用', reactJson, reqConfig)
+    // console.log('清除副作用', reactJson, reqConfig)
   }, [reactJson])
-  console.log('我执行了渲染')
+  // console.log('我执行了渲染')
   return (
     // <div className="App">
     //   <header className="App-header">

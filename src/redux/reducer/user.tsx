@@ -5,7 +5,6 @@ import { DiyRouteObject } from '@/types/user'
 
 export const fetchRouter = createAsyncThunk('users/fetchRouter', async () => {
   const response = await getRouter()
-  console.log('获取了', response)
   return response.data
 })
 
@@ -19,7 +18,6 @@ const user = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchRouter.fulfilled, (state, action) => {
       state.router = action.payload
-      console.log('我看看', action.payload)
     })
   },
 })

@@ -3,11 +3,17 @@ import IconToElement from '@/components/IconToElement'
 import { useAppSelector } from '@/hooks/redux'
 import { Breadcrumb, Layout, Menu } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
+import { SelectEventHandler } from 'rc-menu/lib/interface'
 import { useState, Suspense, useMemo, useCallback, useEffect } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import './index.scss'
 
 const { Header, Content, Footer, Sider } = Layout
+// type MenuCache = {
+//   selectedKeys: string[]
+//   pathList: string[]
+//   labelList: string[]
+// }
 
 /** 根据路由处理菜单配置 */
 const getItems = (routeConfig: userRouter[]): ItemType[] => {
@@ -25,7 +31,7 @@ const getItems = (routeConfig: userRouter[]): ItemType[] => {
 }
 
 /** 回显菜单选中 */
-const getSelectedKeys = (
+const getAllRouteCacheToSelected = (
   routeConfig: userRouter[],
   pathList: string[],
   keys: string[] = [],
@@ -36,7 +42,6 @@ const getSelectedKeys = (
       const item = routeConfig[i]
       if (item.path === (pathList[0] || '/')) {
         keys.push(item.id.toString())
-        console.log(item, pathList[0])
         pathList.splice(0, 1)
         if (pathList.length && item.childern && item.childern.length) childern = item.childern
         break
@@ -44,7 +49,8 @@ const getSelectedKeys = (
     }
   }
 
-  if (childern.length && pathList.length) return getSelectedKeys(childern, pathList, keys)
+  if (childern.length && pathList.length)
+    return getAllRouteCacheToSelected(childern, pathList, keys)
   else return keys
 }
 
@@ -59,7 +65,6 @@ const getPathBySelectedKeys = (
       const item = routeConfig[i]
       if (item.id.toString() === keyList.at(-1)) {
         path += `/${item.path}`
-        console.log('最后', path)
         keyList.splice(keyList.length - 1, 1)
         if (keyList.length && item.childern && item.childern.length) childern = item.childern
         break
@@ -69,26 +74,25 @@ const getPathBySelectedKeys = (
   if (childern.length && keyList.length) return getPathBySelectedKeys(childern, keyList, path)
   else return path.replace(/(\/+)/, '/')
 }
-
 function BaseLayout() {
   const [collapsed, setCollapsed] = useState(false)
-  const routeConfig = useAppSelector((state) => state.user.router)
   const [selectedKeys, setSelectedKeys] = useState<string[]>([])
   const [openKeys, setOpenKeys] = useState<string[]>([])
   const location = useLocation()
+  const routeConfig = useAppSelector((state) => state.user.router)
+
   const items = useMemo<ItemType[]>(() => {
     return getItems(routeConfig)
   }, [routeConfig])
   useEffect(() => {
-    const keys = getSelectedKeys(routeConfig, location.pathname.split('/'), [])
+    const keys = getAllRouteCacheToSelected(routeConfig, location.pathname.split('/'), [])
     setSelectedKeys(keys)
     setOpenKeys(Array.from(new Set([...openKeys, ...keys])))
   }, [location])
 
   const navigate = useNavigate()
-  const onMenuItemSelect = useCallback(
-    (selectData: any) => {
-      console.log('执行?', selectData.keyPath)
+  const onMenuItemSelect = useCallback<SelectEventHandler>(
+    (selectData) => {
       setSelectedKeys([...selectData.selectedKeys])
       navigate({
         pathname: getPathBySelectedKeys(routeConfig, [...selectData.keyPath] as string[], ''),
