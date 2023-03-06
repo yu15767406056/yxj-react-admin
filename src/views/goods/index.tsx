@@ -1,5 +1,5 @@
 import { FC, useEffect } from 'react'
-import { store } from '@/redux/store'
+import { store } from '@/redux'
 import { useNavigate } from 'react-router-dom'
 
 const Goods: FC = () => {
@@ -8,7 +8,7 @@ const Goods: FC = () => {
   useEffect(() => {
     console.log('挂载了')
     store.subscribe(() => {
-      // setUserValue(store.getState().user.router)
+      // setUserValue(store.getState().routers.router)
     })
     return () => console.log('卸载了')
   }, [])

@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { user, communication } from './reducer'
+import { routers } from './modules'
 
 export const store = configureStore({
-  reducer: { user: user.reducer, communication: communication.reducer },
+  reducer: { routers: routers.reducer },
   // ,
   // middleware: (getDefaultMiddleware) =>
   //   getDefaultMiddleware({

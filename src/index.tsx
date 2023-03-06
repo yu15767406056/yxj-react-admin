@@ -3,13 +3,17 @@ import ReactDOM from 'react-dom/client'
 import './index.scss'
 import App from './views/App'
 import reportWebVitals from './reportWebVitals'
+import { AliveScope } from 'react-activation'
+
 console.log('我看看是啥环境', process.env.REACT_APP_SECRET_CODE)
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   //严格模式下渲染函数会执行两次,去掉
   // <React.StrictMode>
-  <App />,
+  <AliveScope>
+    <App />
+  </AliveScope>,
   // </React.StrictMode>,
 )
 

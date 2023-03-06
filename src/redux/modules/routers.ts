@@ -1,18 +1,16 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { userRouter } from '@/api/types/user'
+import { FeatchRouteConfig } from '@/api/types/user'
 import { getRouter } from '@/api/user'
-import { DiyRouteObject } from '@/types/user'
 
 export const fetchRouter = createAsyncThunk('users/fetchRouter', async () => {
   const response = await getRouter()
-  return response.data
+  return [...response.data, { path: '*', id: '*', hidden: true }]
 })
 
-const user = createSlice({
-  name: 'user',
+const routers = createSlice({
+  name: 'routers',
   initialState: {
-    router: [] as userRouter[],
-    featchRouterConfig: [] as DiyRouteObject[],
+    router: [] as FeatchRouteConfig[],
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -21,4 +19,4 @@ const user = createSlice({
     })
   },
 })
-export default user
+export default routers

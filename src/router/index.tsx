@@ -1,13 +1,18 @@
 import Error from '@/views/error'
-import { DiyRouteObject } from '@/types/user'
+import { FeatchRouteObject } from '@/api/types/user'
 import { FC } from 'react'
 import { useRoutes } from 'react-router-dom'
 
-const baseRoutesConfig: DiyRouteObject[] = [{ path: '404', element: <Error /> }]
+const baseRoutesConfig: FeatchRouteObject[] = [
+  { path: '/404', element: <Error /> },
+  // { path: '*', element: <Navigate to='/404'></Navigate> },
+]
 
-const RouterComponent: FC<{ routes?: DiyRouteObject[] }> = (props) => {
+const RouterComponent: FC<{ routes?: FeatchRouteObject[] }> = (props) => {
   const { routes = [] } = props
-  return useRoutes([...routes, ...baseRoutesConfig])
+  console.log('劲来了', routes)
+
+  return useRoutes([...baseRoutesConfig, ...routes])
 }
 
 export default RouterComponent
