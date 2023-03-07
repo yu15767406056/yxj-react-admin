@@ -6,12 +6,18 @@ import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAppSelector } from '@/hooks/redux'
 import { SelectEventHandler, MenuClickEventHandler } from 'rc-menu/lib/interface'
-
+type ActiveRoute = { title: string; path: string }
+type ActiveRouteObject = {
+  selectedRoute: ActiveRoute
+  activeRouteList: ActiveRoute[]
+}
+/** 根据菜单选择的key反向获取出路由相关数据 */
 const getPathBySelectedKeys = (
   routeConfig: FeatchRouteConfig[],
   keyList: string[],
   path: string,
-): { path: string; title: string } => {
+  activeRouteList: ActiveRoute[] = [],
+): ActiveRouteObject => {
   let childern: FeatchRouteConfig[] = []
   let title = ''
   if (keyList.length) {
@@ -21,13 +27,15 @@ const getPathBySelectedKeys = (
         path += `/${item.path}`
         keyList.splice(keyList.length - 1, 1)
         title = item.title
+        activeRouteList.push({ title, path })
         if (keyList.length && item.childern && item.childern.length) childern = item.childern
         break
       }
     }
   }
-  if (childern.length && keyList.length) return getPathBySelectedKeys(childern, keyList, path)
-  else return { path: path.replace(/(\/+)/, '/'), title }
+  if (childern.length && keyList.length)
+    return getPathBySelectedKeys(childern, keyList, path, activeRouteList)
+  else return { selectedRoute: { path: path.replace(/(\/+)/, '/'), title }, activeRouteList }
 }
 
 /** 根据路由处理菜单配置 */
@@ -92,12 +100,19 @@ const LayoutMenu: FC = () => {
   const onMenuItemSelect = useCallback<SelectEventHandler>(
     (selectData) => {
       setSelectedKeys([...selectData.selectedKeys])
+      console.log(
+        '我看看',
+        getPathBySelectedKeys(routeConfig, [...selectData.keyPath] as string[], '', []),
+      )
+
       navigate({
-        pathname: getPathBySelectedKeys(routeConfig, [...selectData.keyPath] as string[], '').path,
+        pathname: getPathBySelectedKeys(routeConfig, [...selectData.keyPath] as string[], '', [])
+          .selectedRoute.path,
       })
     },
     [navigate, routeConfig],
   )
+
   const onMenuItemClick = useCallback<MenuClickEventHandler>((data) => {
     console.log('item点击', data)
   }, [])
