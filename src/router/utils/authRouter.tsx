@@ -51,12 +51,13 @@ const formatRouter = (
         if (item.component === 'BaseLayout') route.element = <BaseLayout />
         else
           route.element = route.mate?.keepAlive ? (
-            <KeepAlive>
+            <KeepAlive name={setPath}>
               <LazyElement />
             </KeepAlive>
           ) : (
             <LazyElement />
           )
+        console.log('我靠路由', setPath)
       }
       if (!route.element) {
         const routeChildren = item.childern ? formatRouter(item.childern, setPath, setIndex) : []

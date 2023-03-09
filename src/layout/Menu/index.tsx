@@ -6,11 +6,8 @@ import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAppSelector } from '@/hooks/redux'
 import { SelectEventHandler, MenuClickEventHandler } from 'rc-menu/lib/interface'
-type ActiveRoute = { title: string; path: string }
-type ActiveRouteObject = {
-  selectedRoute: ActiveRoute
-  activeRouteList: ActiveRoute[]
-}
+import { ActiveRoute, ActiveRouteObject } from '@/redux/types/routers'
+
 /** 根据菜单选择的key反向获取出路由相关数据 */
 const getPathBySelectedKeys = (
   routeConfig: FeatchRouteConfig[],
