@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction, SliceCaseReducers } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ActiveRoute } from '../types/routers'
 
 const tabs = createSlice({
@@ -8,9 +8,14 @@ const tabs = createSlice({
   },
   reducers: {
     addTabs: (state, action: PayloadAction<ActiveRoute>) => {
-      state.tabsCache.push(action.payload)
+      !state.tabsCache.some(({ path }) => path === action.payload.path) &&
+        state.tabsCache.push(action.payload)
     },
-    dropTabs: (state, action: PayloadAction<ActiveRoute>) => {},
+    closeTabs: (state, action: PayloadAction<ActiveRoute>) => {
+      const index = state.tabsCache.findIndex(({ path }) => path === action.payload.path)
+      /** 默认0为主页 */
+      index > 0 && state.tabsCache.splice(index, 1)
+    },
   },
 })
 

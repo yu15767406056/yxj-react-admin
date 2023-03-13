@@ -1,5 +1,5 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import { routers } from './modules'
+import { routers, tabs } from './modules'
 import {
   persistStore,
   persistReducer,
@@ -13,7 +13,7 @@ import {
 import storage from 'redux-persist/lib/storage'
 
 // 创建reducer(拆分reducer)
-const rootReducer = combineReducers({ routers: routers.reducer })
+const rootReducer = combineReducers({ routers: routers.reducer, tabs: tabs.reducer })
 
 //Redux持久化
 const persistConfig = {

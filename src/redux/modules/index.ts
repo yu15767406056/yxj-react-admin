@@ -1,2 +1,4 @@
 import routers from './routers'
-export { routers }
+import tabs from './tabs'
+
+export { routers, tabs }
